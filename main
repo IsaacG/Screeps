@@ -1,0 +1,41 @@
+require ('globals.js');
+var utils = require ('utils.js');
+const Log = utils.Log;
+var TaskHash = require('tasks.js');
+
+function generateTasks(){
+  var tasks = [];
+  while (Memory.addTask.length !== 0) tasks.push({taskName: Memory.addTask.shift()});
+  return tasks;
+}
+
+module.exports.loop = function () {
+  if (!Memory.kernel) {
+    Memory.kernel = {tId: 1}
+    Memory.addTask = []
+    Memory.tasks = {}
+    utils.LaunchTask('init');
+  }
+
+  Log('-----START-----');
+  generateTasks();
+  Object.keys(Memory.tasks).forEach((tId) => {
+    m = Memory.tasks[tId]
+    var taskName = m.taskName
+    var taskId = m.taskId
+    var task = new TaskHash[taskName](m)
+    Log('Run ' + task.string())
+
+    task.run()
+  });
+
+  // A way to run code from the console
+  if (Memory.do !== undefined) {
+    if (Memory.do === 1) Memory.addTask.push('active_harvester');
+    if (Memory.do === 2) Memory.addTask.push('active_upgrader');
+    Memory.lastLog = {};
+    delete Memory.do;
+  }
+}
+
+// vim:syntax=javascript:expandtab:ts=2:sw=2
