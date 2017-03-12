@@ -1,4 +1,4 @@
-var utils = require ('utils.js');
+var utils = require ('utils');
 const Log = utils.Log;
 const Debug = utils.Debug;
 
@@ -31,7 +31,7 @@ class Action {
 };
 
 // Simple action that does no work; it simply finds a worker.
-class ActionGetCreep extends Action {
+class Action_GetCreep extends Action {
   constructor(memory) {
     // Set memory.creep to the first creep.
     if (Game.creeps.length > 0) {
@@ -44,7 +44,7 @@ class ActionGetCreep extends Action {
 }
 
 // Create a creep from the first spawn.
-class ActionSpawn extends Action {
+class Action_Spawn extends Action {
   constructor(memory){
     // Set spawn to the first spawn.
     super(memory)
@@ -88,7 +88,7 @@ class ActionSpawn extends Action {
 }
 
 // Base class for all sorts of actions a worker may perform
-class ActionWorkerCreep extends Action {
+class Action_WorkerCreep extends Action {
   creep(s){return this.gameObj('creep', s);}
   target(s){return this.gameObj('target', s);}
   isComplete(){ 
@@ -105,7 +105,7 @@ class ActionWorkerCreep extends Action {
 }
 
 // Harvesting. Go to the target and harvest until we are full.
-class ActionHarvest extends ActionWorkerCreep {
+class Action_Harvest extends Action_WorkerCreep {
   run(){
     this.memory.rc = this.creep().harvest(this.target());
     if (this.memory.rc === ERR_NOT_IN_RANGE) this.creep().moveTo(this.target());
@@ -117,7 +117,7 @@ class ActionHarvest extends ActionWorkerCreep {
 }
 
 // Pickup. Find energy and gather it up.
-class ActionPickup extends ActionWorkerCreep {
+class Action_Pickup extends Action_WorkerCreep {
   run(){
     this.memory.rc = this.creep().pickup(this.target());
     if (this.memory.rc === ERR_NOT_IN_RANGE) this.creep().moveTo(this.target());
@@ -129,7 +129,7 @@ class ActionPickup extends ActionWorkerCreep {
 }
 
 // Withdraw energy from the closest Spawn.
-class ActionWithdraw extends ActionWorkerCreep {
+class Action_Withdraw extends Action_WorkerCreep {
   run(){
     if (this.creep().withdraw(this.target(), RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
       this.creep().moveTo(this.target());
@@ -139,7 +139,7 @@ class ActionWithdraw extends ActionWorkerCreep {
 }
 
 // Fuel a target. Go to the target and transfer until target full or creep is empty.
-class ActionFuel extends ActionWorkerCreep {
+class Action_Fuel extends Action_WorkerCreep {
   run(){
     if(this.creep().transfer(this.target(), RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
       this.creep().moveTo(this.target()); 
@@ -153,7 +153,7 @@ class ActionFuel extends ActionWorkerCreep {
 }
 
 // Build construction. Find a contruction site and build it up.
-class ActionBuild extends ActionWorkerCreep {
+class Action_Build extends Action_WorkerCreep {
   run(){
     var rc = this.creep().build(this.target());
     if (rc === OK) {
@@ -176,7 +176,7 @@ class ActionBuild extends ActionWorkerCreep {
 }
 
 // Upgrade a controller. Go to the target and transfer until target full or creep is empty.
-class ActionUpgrade extends ActionWorkerCreep {
+class Action_Upgrade extends Action_WorkerCreep {
   run(){
     if(this.creep().upgradeController(this.target()) === ERR_NOT_IN_RANGE) {
       this.creep().moveTo(this.target()); 
@@ -186,22 +186,22 @@ class ActionUpgrade extends ActionWorkerCreep {
 }
 
 // End. Task is complete. Should be reaped.
-class ActionEnd extends Action {
+class Action_End extends Action {
   constructor(actor, actee) { super('end', actor, actee) }
   run(){return}
   isComplete(){return false}
 }
 
 module.exports = {
-  upgrade: ActionUpgrade,
-  harvest: ActionHarvest,
-  pickup: ActionPickup,
-  build: ActionBuild,
-  fuel: ActionFuel,
-  spawn: ActionSpawn,
-  get_creep: ActionGetCreep,
-  withdraw: ActionWithdraw,
-  end: ActionEnd,
+  upgrade: Action_Upgrade,
+  harvest: Action_Harvest,
+  pickup: Action_Pickup,
+  build: Action_Build,
+  fuel: Action_Fuel,
+  spawn: Action_Spawn,
+  get_creep: Action_GetCreep,
+  withdraw: Action_Withdraw,
+  end: Action_End,
   start: Action,
   wait: Action,
 };

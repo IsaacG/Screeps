@@ -1,8 +1,8 @@
-require ('globals.js');
-var utils = require ('utils.js');
+require ('globals');
+var utils = require ('utils');
 const Log = utils.Log;
 const Debug = utils.Debug;
-var TaskHash = require('tasks.js');
+var TaskHash = require('tasks');
 
 module.exports.loop = function () {
   if (!Memory.kernel) {
