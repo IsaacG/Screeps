@@ -21,6 +21,7 @@ module.exports.loop = function () {
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
+	if (!('role' in creep.memory)) creep.memory.role = 'harvester';
         var role = creep.memory.role;
 
         if (creep.ticksToLive == 50 && !creep.memory.pushedRegen) {

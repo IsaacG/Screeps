@@ -3,7 +3,7 @@ var spawnMakeCreep = {
     run: function(spawn) {
         if (spawn.memory.makeCreep.length == 0) return;
         if (spawn.spawning) return;
-        if (spawn.room.energyAvailable < 0.9 * spawn.room.energyCapacityAvailable) return;
+        // if (spawn.room.energyAvailable < 0.9 * spawn.room.energyCapacityAvailable) return;
 
         var role = spawn.memory.makeCreep[0];
         var partList = {
@@ -13,6 +13,7 @@ var spawnMakeCreep = {
             upgrader: [MOVE, CARRY, WORK, WORK, MOVE, WORK, MOVE, CARRY, WORK, MOVE]};
         var parts = partList[role];
         while (spawn.canCreateCreep(parts) == ERR_NOT_ENOUGH_ENERGY) parts.pop();
+	if (parts.length < 3) return;
 
         var name = spawn.createCreep(parts, {role: role});
         if (typeof(name) != "string") {
@@ -20,7 +21,7 @@ var spawnMakeCreep = {
         } else {
             spawn.memory.makeCreep.shift();
             console.log("Made creep '" + name + "', role " + role + ". Parts: " + parts + " (" + parts.length + ")");
-            // console.log("Creeps left to create: " + spawn.memory.makeCreep.length + ". " + spawn.memory.makeCreep);
+            console.log("Creeps left to create: " + spawn.memory.makeCreep.length + ". " + spawn.memory.makeCreep);
         }
     }
 };
