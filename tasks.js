@@ -1,17 +1,3 @@
-// TODO: Have the upgrader smart-select the source based on the energy?
-// TODO: Figure out if we got unused creeps to use for a new role.
-// TODO: Static harvester + hauler
-// TODO: Fill extensions up
-// TODO: Repairers
-// TODO: static miners to go to other mines?
-// TODO: Finer grain debug output (task, action, info, debug)
-// TODO: Make builders stick to one thing?
-// TODO: Haulers to collect from containers
-// TODO: Static upgraders, feeders
-// TODO: Have per-task-group start/stop (builders, upgraders)
-// TODO: Add a process-layer wrapper between kernel and programs.
-// TODO: Debugging with levels and the ability to enable per-thread or per-class.
-
 var utils = require ('utils');
 const Log = utils.Log;
 const Debug = utils.Debug;
@@ -135,7 +121,6 @@ class Task_Worker extends Task {
     }
   }
   attachWorker(){ 
-    // TODO Make smart choice between spawn and reused
     if (this.memory.use_new_creep === false) {
       this.state('get_creep');
     } else if (Object.keys(Game.creeps).length < 2 || this.memory.use_new_creep === true) {
@@ -203,7 +188,6 @@ class Task_Harvester extends Task_Worker {
   findTargetTo() {
     var creep = this.worker()
     var best = null;
-    // TODO fill extensions first
     creep.room.find(FIND_STRUCTURES).forEach((s)=>{
       // Find a spawn/extension which is not full.
       if (s.structureType !== STRUCTURE_EXTENSION && s.structureType !== STRUCTURE_SPAWN) return;
@@ -229,7 +213,6 @@ class Task_StaticHarvester extends Task_StaticWorker {
     super(memory)
     this.energy_method = 'harvest'
   }
-  // TODO prefer to stand on a container
   findTargetFrom(){ return this.worker().pos.findClosestByPath(FIND_SOURCES).id; }
 }
 
