@@ -5,8 +5,8 @@ var roleBuilder = require('role.builder');
 var structTower = require('struct.tower');
 var spawnMakeCreep = require('spawn.makeCreep');
 
-module.exports.loop = function () {
 
+module.exports.loop = function () {
     var spawn = Game.spawns["Spawn1"]
     if (!('makeCreep' in spawn.memory)) spawn.memory.makeCreep = ['harvester', 'upgrader', 'builder'];
 
