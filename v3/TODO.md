@@ -15,6 +15,7 @@
 * Have per-task-group start/stop (builders, upgraders)
 * Add a process-layer wrapper between kernel and programs.
 * Debugging with levels and the ability to enable per-thread or per-class.
+  * Use the Raw Memory as a logfile to store the last N entries?
 * Task_Worker.attachWorker() can decide smartly between spawn vs reuse
 * Task_StaticWorker can prefer standing on a container when a container spot is open.
 * Builders, with nothing to build, should get out of the way. Ditto repairers.
