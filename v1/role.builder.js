@@ -7,6 +7,7 @@ var roleBuilder = {
         }
         if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
             creep.memory.building = true;
+	    delete creep.memory.buildTarget;
             creep.say('🚧 build');
         }
 
@@ -24,9 +25,11 @@ var roleBuilder = {
                         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
 			break;
 		    default:
-		        creep.memory.buildTarget = null;
+		        delete creep.memory.buildTarget;
 		}
-            }
+            } else {
+	        delete creep.memory.buildTarget;
+	    }
             return true;
         }
         else {
