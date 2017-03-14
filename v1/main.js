@@ -14,7 +14,7 @@ module.exports.loop = function () {
     filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
     towers.forEach(tower => structTower.run(tower));
 
-    if ((Game.time % 20) == 0) {
+    if ((Game.time % 10) == 0) {
         if (spawn.memory.makeCreep.length != 0 && ! spawn.spawning) spawnMakeCreep.run(spawn);
         for (var name in Memory.creeps) if (!Game.creeps[name]) delete Memory.creeps[name];
     }
