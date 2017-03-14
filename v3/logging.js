@@ -6,3 +6,5 @@
 // * global log levels
 // * per-process log levels
 // * per-program log levels
+
+module.exports.Log = (s) => console.log(s);
