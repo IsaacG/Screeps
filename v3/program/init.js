@@ -1,3 +1,8 @@
+/* *****
+ * Rename from init to test
+ * Test that old orphan processes get reaped.
+ * *****/
+
 Program = require('program/templates/base');
 
 class Init extends Program {
