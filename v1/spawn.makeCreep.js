@@ -21,7 +21,7 @@ var spawnMakeCreep = {
         } else {
             spawn.memory.makeCreep.shift();
             console.log("Made creep '" + name + "', role " + role + ". Parts: " + parts + " (" + parts.length + ")");
-            console.log("Creeps left to create: " + spawn.memory.makeCreep.length + ". " + spawn.memory.makeCreep);
+            // console.log("Creeps left to create: " + spawn.memory.makeCreep.length + ". " + spawn.memory.makeCreep);
         }
     }
 };
