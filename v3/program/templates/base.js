@@ -11,7 +11,12 @@ class Program {
     this.args = m.args;
     this.children = {};
 
-    this.Log = require('logging').Log;
+    this.log = require('logging').Log;
+    this.info = require('logging').Log;
+    this.debug = require('logging').Log;
+    this.warn = require('logging').Log;
+    this.error = require('logging').Log;
+
     this.syscall = require('consts').syscall;
     if (!this.m.called_init) {
       this.init();
