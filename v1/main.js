@@ -1,3 +1,5 @@
+require('globals')
+
 var roleRepairer = require('role.repairer');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
@@ -10,6 +12,26 @@ module.exports.loop = function () {
     var spawn = Game.spawns["Spawn1"]
     if (!('makeCreep' in spawn.memory)) spawn.memory.makeCreep = ['harvester', 'upgrader', 'builder'];
 
+    // Auto spawn slowly up to the desired count.
+    if ((Game.time % 100) === 0) {
+        var role_count = {harvester: 0, upgrader: 0, builder: 1, repairer: 1};
+        var desired_count = {
+            harvester: 3,
+            upgrader: 3,
+            builder: 1,
+            repairer: 1
+        }
+        Object.keys(Game.creeps).forEach((c) => {
+            desired_count[Game.creeps[c].memory.role]++;
+        });
+        Object.keys(desired_count).forEach((r) => {
+            if (spawn.memory.makeCreep.length > 0) return;
+            if (desired_count[r] > role_count[r]) {
+                spawn.memory.makeCreep.push(r);
+            }
+        });
+    }
+
     var towers = spawn.room.find(FIND_STRUCTURES, {
     filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
     towers.forEach(tower => structTower.run(tower));
@@ -21,7 +43,7 @@ module.exports.loop = function () {
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-	if (!('role' in creep.memory)) creep.memory.role = 'harvester';
+        if (!('role' in creep.memory)) creep.memory.role = 'harvester';
         var role = creep.memory.role;
 
         if (creep.ticksToLive == 50 && !creep.memory.pushedRegen) {
@@ -39,4 +61,4 @@ module.exports.loop = function () {
             if (roleList.shift().run(creep)) break;
         }
     }
-}
+};
