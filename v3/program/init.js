@@ -25,22 +25,22 @@ class Init extends Program {
     }
     this.m.by_pid = {};
 
-    runAllManagers();
+    this.runAllManagers();
   }
 
   // Run 'em all
   runAllManagers() {
-    for (var m in ['manage_memory']) { runManager('global', m) };
-    for (var m in []) { runManager('room', m) };
-    for (var m in ['manage_spawn_queue']) { runManager('spawn', m) };
+    for (var m in ['manage_memory']) { this.runManager('global', m) };
+    for (var m in []) { this.runManager('room', m) };
+    for (var m in ['manage_spawn_queue']) { this.runManager('spawn', m) };
   }
 
   // Run manager programs, either once for global or for each room/spawn for those. Store the PID.
   runManager(level, program) {
     if (level === 'global') {
-      if (!this.m.manager.[level][program]) {
+      if (!this.m.managers[level][program]) {
         let pid = this.exec(program);
-        this.m.manager.[level][program] = pid;
+        this.m.managers[level][program] = pid;
         this.m.by_pid[pid] = [level, program, null];
       }
     } else {
@@ -55,7 +55,7 @@ class Init extends Program {
       }
       for (var k in keys) {
         if (!this.m.managers[level][k]) this.m.managers[level][k] = {};
-        if (!this.m.managers[level][k][program])) {
+        if (!this.m.managers[level][k][program]) {
           let pid = this.exec(program, k);
           this.m.managers[level][k][program] = pid;
           this.m.by_pid[pid] = [level, program, k];
@@ -80,6 +80,10 @@ class Init extends Program {
 
       case this.syscall.WAIT:
         // We got a WAIT reply; a child has died! syscall_result[1] === [pid, rc]
+        if (!(syscall_result[1])) {
+          this.error('run: WAIT returned with no results. No children?!');
+          return;
+        }
         var pid = syscall_result[1][0];
         var level = this.m.by_pid[pid][0];
         var program = this.m.by_pid[pid][1];
@@ -95,7 +99,7 @@ class Init extends Program {
         }
         this.m.by_pid[new_pid] = this.m.by_pid[pid];
         delete this.m.by_pid[pid];
-        break;
+        return [this.syscall.WAIT, true];
     }
   }
 }
