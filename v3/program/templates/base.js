@@ -6,8 +6,11 @@
  * *****/
 
 class Program {
-  constructor (m){
+  constructor(m) {
     this.m = m;
+    this.args = m.args;
+    this.children = {};
+
     this.Log = require('logging').Log;
     this.syscall = require('consts').syscall;
     if (!this.m.called_init) {
@@ -21,6 +24,14 @@ class Program {
     if (!result) result = [this.syscall.TICK, null];
 
     return result;
+  }
+
+  // Run a child program, return the PID
+  exec(program, args) {
+  }
+
+  // Run a child program. Wait for it to finish and return the RC.
+  exec_wait(program, args) {
   }
 
   init() {};
