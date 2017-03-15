@@ -14,7 +14,7 @@ module.exports.loop = function () {
 
     // Auto spawn slowly up to the desired count.
     if ((Game.time % 100) === 0) {
-        var role_count = {harvester: 0, upgrader: 0, builder: 1, repairer: 1};
+        var role_count = {harvester: 0, upgrader: 0, builder: 0, repairer: 0};
         var desired_count = {
             harvester: 3,
             upgrader: 3,
@@ -22,11 +22,12 @@ module.exports.loop = function () {
             repairer: 1
         }
         Object.keys(Game.creeps).forEach((c) => {
-            desired_count[Game.creeps[c].memory.role]++;
+            role_count[Game.creeps[c].memory.role]++;
         });
         Object.keys(desired_count).forEach((r) => {
             if (spawn.memory.makeCreep.length > 0) return;
             if (desired_count[r] > role_count[r]) {
+		console.log(`For role ${r} we desire ${desired_count[r]} and have ${role_count[r]}. Spawn more.`);
                 spawn.memory.makeCreep.push(r);
             }
         });
