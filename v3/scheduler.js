@@ -12,6 +12,14 @@
 // The return_values will be loaded the next tick so other processes can read the values.
 // After live processes run, the old return_values will be dropped to collect the new.
 
+
+/* *****
+ * TODO
+ * ====
+ * Add an ALRM signal so that processes (running or sleeping) can be signalled?
+ * Or some other way to timeout a WAIT. SIGUSR/HUP?
+ * *****/
+
 const Log = require('logging').Log;
 
 // Multiple process queues.
@@ -147,12 +155,13 @@ function runProcess(process_queues, pid) {
       // If there is a dead child, immediately pick one and run with it. (There may be multiple.)
       // Otherwise, if BLOCK, switch to Q_WAIT. Else return null.
       case SYSCALL.WAIT:
+        var blocking = syscall[1];
         var children = Object.keys(process_queues[Q_DEAD]).filter((p)=>{return process_queues[Q_DEAD][p].ppid === pid});
         if (children.length !== 0) {
           let c_pid = children[0];
           syscall_reply = [SYSCALL.WAIT, [c_pid, process_queues[Q_DEAD][c_pid].rc]];
           delete process_queues[Q_DEAD][c_pid];
-        } else if (syscall[1]) {
+        } else if (blocking) {
           var childExists = false;
           for (q in [Q_RUN, Q_NEW, Q_WAIT, Q_SUSP]) {
             if (Object.keys(process_queues[q]).filter((p)=>{return process_queues[q][p].ppid === pid}).length !== 0) {
@@ -174,8 +183,6 @@ function runProcess(process_queues, pid) {
         }
         break;
 
-      case SYSCALL.CHLD_DEAD:
-        
       // Process wants to launch a new program
       case SYSCALL.EXEC:
         // Create a new process, put it into the to-run queue. Who sets up what where?
