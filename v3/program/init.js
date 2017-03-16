@@ -31,7 +31,7 @@ class Init extends Program {
   // Run 'em all
   runAllManagers() {
     ['manage_memory'].forEach((m) => this.runManager('global', m) );
-    [].forEach((m) => this.runManager('room', m) );
+    ['manage_room_creeps'].forEach((m) => this.runManager('room', m) );
     ['manage_spawn_queue'].forEach((m) => this.runManager('spawn', m) );
   }
 
@@ -53,14 +53,15 @@ class Init extends Program {
         this.error('runManager: invalid level [' + level + ']');
         return;
       }
-      for (var k in keys) {
+      keys.forEach((k) => {
         if (!this.m.managers[level][k]) this.m.managers[level][k] = {};
         if (!this.m.managers[level][k][program]) {
           let pid = this.exec(program, k);
+          this.info(`For ${level} ${k} run ${program}:${pid}`);
           this.m.managers[level][k][program] = pid;
           this.m.by_pid[pid] = [level, program, k];
         }
-      }
+      });
     }
   }
 
