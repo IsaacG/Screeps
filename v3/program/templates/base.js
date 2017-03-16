@@ -5,22 +5,27 @@
  * run() takes a [SYSCALL, args] and returns a [SYSCALL, args]
  * *****/
 
-class Program {
-  constructor(m) {
-    this.m = m;
-    this.args = m.args;
-    this.children = {};
+LogBase = require('log_base');
 
-    this.log = require('logging').Log;
-    this.info = require('logging').Log;
-    this.debug = require('logging').Log;
-    this.warn = require('logging').Log;
-    this.error = require('logging').Log;
+class Program extends LogBase {
+  constructor(m, kernel) {
+    super();
+    this.m = m;
+    this.kernel = kernel;
+    this.args = m.args;
+    this.pid = m.pid;
+    this.children = {};
 
     this.syscall = require('consts').syscall;
     if (!this.m.called_init) {
       this.init();
       this.m.called_init = true;
+    }
+  }
+
+  log (level, msg) {
+    if ((level[0] >= this.log_level) || this.constructor.name === this.log_klass || this.pid == this.log_pid) {
+      console.log(`[${level[1]} ${this.constructor.name} ${this.pid}] ${msg}`)
     }
   }
 
@@ -33,6 +38,7 @@ class Program {
 
   // Run a child program, return the PID
   exec(program, args) {
+    return this.kernel.scheduler.exec(this.pid, program, args);
   }
 
   // Run a child program. Wait for it to finish and return the RC.
