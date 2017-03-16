@@ -2,18 +2,13 @@ Program = require('program/templates/base');
 
 
 /* *****
- * Program description here.
+ *
  * *****/
 class ProgramName extends Program {
   init() {
-    // initialize
   }
 
-  run(syscall_result) {
-    // Do stuff
-
-    // Die
-    return [this.syscall.EXIT, 0];
+  run(run_input) {
   }
 }
 
