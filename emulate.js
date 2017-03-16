@@ -1,6 +1,7 @@
 
 Game = {time:0, spawns:{1:{id:1,canCreateCreep:function(){return -4}, spawning:false}}, creeps:{}, getObjectById: function(){}};
 Memory = {}
+Memory.log = {level: 1, klass: 'Scheduler', pid: 0};
 var s = require('main');
 
 function run() {
