@@ -211,7 +211,6 @@ class Scheduler extends LogBase {
         case SYSCALL.WAIT:
           var blocking = syscall[1];
           var children = Object.keys(process_queues[Q_DEAD]).filter((p)=>{return process_queues[Q_DEAD][p].ppid === pid});
-          this.info(`pid ${pid} called WAIT block=${blocking}, dead child count: ${children.length}`);
           if (children.length !== 0) {
             let c_pid = children[0];
             syscall_reply = [SYSCALL.WAIT, [c_pid, process_queues[Q_DEAD][c_pid].rc]];
@@ -220,12 +219,10 @@ class Scheduler extends LogBase {
             var childExists = false;
             [Q_RUN, Q_NEW, Q_WAIT, Q_SUSP].forEach((q) => {
               Object.keys(process_queues[q]).forEach((p) => {
-                this.info(`For ${pid} Q${q} p:${p} pp:${process_queues[q][p].ppid} => `);
                 // Note == and not === because keys are strings.
                 if (process_queues[q][p].ppid == pid) childExists = true;
               });
             });
-            this.info(`pid ${pid} non-dead child exists: ${childExists}`);
             if (childExists) {
               // Shuffle to Q_WAIT.
               process_queues[Q_WAIT][pid] = process_queues[Q_RUN][pid];
