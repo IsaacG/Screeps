@@ -17,7 +17,7 @@ module.exports.loop = function () {
         var role_count = {harvester: 0, upgrader: 0, builder: 0, repairer: 0};
         var desired_count = {
             harvester: 3,
-            upgrader: 3,
+            upgrader: 4,
             builder: 1,
             repairer: 1
         }
