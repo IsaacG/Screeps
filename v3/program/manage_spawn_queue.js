@@ -7,10 +7,22 @@ Program = require('program/templates/base');
  * *****/
 class ManageSpawnQueue extends Program {
   init() {
+    let s = this.shm('spawn_queue');
+    if (!s.q) s.q = [];
+  }
+  loop_init() {
+    if (!this.queue) this.queue = this.shm('spawn_queue').q;
   }
 
   run(run_input) {
     this.info('Tick');
+    if (this.queue.length !== 0) {
+      this.info('Queued: ' + this.queue[0]);
+      if ((Game.time % 5) === 0) {
+        let creep = this.queue.shift();
+        this.info('Shifted creep ' + creep + ' off the spawn queue for spawn ' + this.args)
+      }
+    }
   }
 }
 
