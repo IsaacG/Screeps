@@ -1,7 +1,7 @@
 LogBase = require('log_base');
 
 class Kernel extends LogBase {
-  constructor () {
+  constructor() {
     super();
     if (!Memory.kernel) Memory.kernel = {};
     this.m = Memory.kernel;
@@ -9,6 +9,12 @@ class Kernel extends LogBase {
   
   loop() {
     require('scheduler')(this);
+  }
+
+  shm(name) {
+    if (!this.m.shm) this.m.shm = {};
+    if (!this.m.shm[name]) this.m.shm[name] = {};
+    return this.m.shm[name];
   }
 }
 
