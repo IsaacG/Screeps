@@ -30,9 +30,9 @@ class Init extends Program {
 
   // Run 'em all
   runAllManagers() {
-    for (var m in ['manage_memory']) { this.runManager('global', m) };
-    for (var m in []) { this.runManager('room', m) };
-    for (var m in ['manage_spawn_queue']) { this.runManager('spawn', m) };
+    ['manage_memory'].forEach((m) => this.runManager('global', m) );
+    [].forEach((m) => this.runManager('room', m) );
+    ['manage_spawn_queue'].forEach((m) => this.runManager('spawn', m) );
   }
 
   // Run manager programs, either once for global or for each room/spawn for those. Store the PID.
