@@ -21,6 +21,7 @@ class Program extends LogBase {
       this.init();
       this.m.called_init = true;
     }
+    this.loop_init();
   }
 
   log (level, msg) {
@@ -45,6 +46,13 @@ class Program extends LogBase {
   exec_wait(program, args) {
   }
 
+  // Get some shared memory via the kernel.
+  shm(name) {
+    if (!name) name = this.constructor.name;
+    return this.kernel.shm(name);
+  }
+
+  loop_init() {};
   init() {};
   run(syscall_result) {};
 }
