@@ -10,6 +10,11 @@ class ManageMemory extends Program {
 
   run(run_input) {
     this.info('Tock');
+    if ((Game.time % 50) === 0) {
+      for (var name in Memory.creeps) {
+        if (!Game.creeps[name]) delete Memory.creeps[name];
+      }
+    }
   }
 }
 
