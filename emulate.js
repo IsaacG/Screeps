@@ -1,10 +1,15 @@
 
+MOVE = 0;
+CARRY = 1;
+WORK = 2;
+
 Game = {
   time:0,
   spawns: {
     'Spawn1': {
       id:12345,
       canCreateCreep:function(){return -4},
+      createCreep:function(){return "Foo"},
       spawning:false,
       name: 'Spawn1',
     }
