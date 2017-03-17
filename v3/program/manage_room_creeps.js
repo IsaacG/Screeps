@@ -13,6 +13,7 @@ class ManageRoomCreeps extends Program {
   loop_init() {
     this.room = this.args;
     if (!this.queue) this.queue = this.shm('spawn_queue').q;
+    if (!this.out) this.out = this.shm('spawn_queue').out;
   }
 
   // To spawn creep, we exec a spawn_creep {args}, transition to WAITING and WAIT on it
@@ -25,11 +26,11 @@ class ManageRoomCreeps extends Program {
   addCreep(role) {
     let rc = this.exec('creep_' + role);
     let pid = rc[0];
-    let 
     this.m.room_creeps[pid] = role;
   }
 
   creepDied(pid) {
+  }
 
   run(run_input) {
     // Run even N ticks?
@@ -38,7 +39,11 @@ class ManageRoomCreeps extends Program {
     let room = Game.rooms[this.room];
     // Filter creeps based on room and/or based on room_creeps.
     if ((Game.time % 3) == 0) {
-      this.queue.push('Creep' + Game.time);
+      this.queue.push([this.pid, [MOVE, CARRY, WORK], null]);
+    }
+    if (this.out && this.pid in this.out) {
+      this.info(`Spawn ${this.out[this.pid]} was created for us!`);
+      delete this.out[this.pid];
     }
   }
 }
