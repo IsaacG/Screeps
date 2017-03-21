@@ -16,9 +16,9 @@ module.exports.loop = function () {
     if ((Game.time % 100) === 0) {
         var role_count = {harvester: 0, upgrader: 0, builder: 0, repairer: 0};
         var desired_count = {
-            harvester: 3,
-            upgrader: 4,
-            builder: 1,
+            harvester: 4,
+            upgrader: 3,
+            builder: 2,
             repairer: 1
         }
         Object.keys(Game.creeps).forEach((c) => {
