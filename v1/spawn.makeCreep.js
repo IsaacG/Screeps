@@ -11,6 +11,7 @@ var spawnMakeCreep = {
             harvester: [MOVE, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK],
             repairer: [MOVE, CARRY, WORK, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE],
             upgrader: [MOVE, CARRY, WORK, WORK, MOVE, WORK, MOVE, CARRY, WORK, MOVE]};
+	if (!(role in partList)) {spawn.memory.makeCreep.shift(); return;}
         var parts = partList[role];
         while (spawn.canCreateCreep(parts) == ERR_NOT_ENOUGH_ENERGY) parts.pop();
 	if (parts.length < 3) return;
