@@ -1,53 +1,46 @@
+let utils = require('utils');
+
 var roleBuilder = {
-    run: function(creep) {
+  run: function(creep) {
+    if (!creep.memory.task) creep.memory.task = 'collect';
 
-        if(creep.memory.building && creep.carry.energy == 0) {
-            creep.memory.building = false;
-            creep.say('🔄 harvest');
-        }
-        if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.building = true;
-	    delete creep.memory.buildTarget;
-            creep.say('🚧 build');
-        }
-
-        if(creep.memory.building) {
-	    if (!(creep.memory.buildTarget)) {
-		    creep.memory.buildTarget = findBuildTarget(creep);
-	    }
-	    if (!creep.memory.buildTarget) return false;
-	    var target = Game.getObjectById(creep.memory.buildTarget);
-	    if (target) {
-		switch(creep.build(target)) {
-		    case OK:
-		        break;
-		    case ERR_NOT_IN_RANGE:
-                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-			break;
-		    default:
-		        delete creep.memory.buildTarget;
-		}
-            } else {
-	        delete creep.memory.buildTarget;
-	    }
-            return true;
-        }
-        else {
-	    if (!creep.memory.source) {
-                var sources = creep.room.find(FIND_SOURCES);
-		var i = Math.floor(Math.random() * sources.length);
-		creep.memory.source = sources[i].id;
-	    }
-	    var source = Game.getObjectById(creep.memory.source);
-            if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
-            return true;
-        }
+    // State change
+    if (creep.memory.task === 'collect' && creep.carry.energy === creep.carryCapacity) {
+      creep.memory.task = 'work';
+      creep.memory.target = null;
+    } else if (creep.memory.task === 'work' && creep.carry.energy === 0) {
+      creep.memory.task = 'collect';
+      creep.memory.source = null;
     }
+
+    if (creep.memory.task === 'collect') {
+      utils.getEnergy(creep, false);
+      return true;
+    } else { // work
+      var target;
+      if (creep.memory.static_target) {
+        target = creep.memory.static_target;
+      } else {
+        if (!creep.memory.target) creep.memory.target = getTarget(creep);
+        if (!creep.memory.target) return false;
+        target = creep.memory.target;
+      }
+      target = Game.getObjectById(target);
+
+      switch(creep.build(target)) {
+        case OK:
+          break;
+        case ERR_NOT_IN_RANGE:
+          creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+          break;
+        default:
+          creep.memory.target = null;
+      }
+    }
+  }
 };
 
-function findBuildTarget(creep) {
+function getTarget(creep) {
 	var best = null;
 	var bestLength = 0;
 	var priorities = {
@@ -92,3 +85,5 @@ function findBuildTarget(creep) {
 }
 
 module.exports = roleBuilder;
+
+// vim:syntax=javascript:expandtab:ts=2:sw=2

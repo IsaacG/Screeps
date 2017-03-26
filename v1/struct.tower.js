@@ -1,9 +1,9 @@
 function repairRanker(tower, structure) {
   if (!tower) { console.log("No tower passed."); return null; }
   if (!structure) { console.log("No structure passed."); return null; }
-  var value = structure.hits / structure.hitsMax;
-  value *= (structure.structureType == STRUCTURE_RAMPART ? 7 : 1);
-  value /= Math.sqrt(tower.pos.getRangeTo(structure));
+  var value = 100 * structure.hits / structure.hitsMax;
+  value /= (structure.structureType == STRUCTURE_RAMPART ? 10 : 1);
+  value *= Math.sqrt(tower.pos.getRangeTo(structure));
   return value;
 }
 
@@ -45,6 +45,14 @@ function findBestToRepair(tower) {
 
 var structTower = {
   run: function(tower) {
+
+    var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    if(closestHostile) {
+      tower.attack(closestHostile);
+      return;
+    }
+
+    if (tower.energy < (tower.energyCapacity / 2)) return;
 	
     if (false) {
       var repair = findClosestDamaged(tower);
@@ -55,10 +63,6 @@ var structTower = {
       tower.repair(repair);
     }
 
-    var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-    if(closestHostile) {
-      tower.attack(closestHostile);
-    }
   }
 };
 

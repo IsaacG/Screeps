@@ -1,12 +1,7 @@
-function getSource (creep) {
-  if (creep.memory.static_source) return creep.memory.static_source;
-  var sources = creep.room.find(FIND_SOURCES);
-  var i = Math.floor(Math.random() * sources.length);
-  return sources[i].id;
-}
+/* Haul energy from drops/containers to spawn/extension/tower */
+let utils = require('utils');
 
 function getTarget (creep) {
-  if (creep.memory.static_target) return creep.memory.static_target;
   var targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) => {
       return (((structure.structureType == STRUCTURE_EXTENSION ||
@@ -22,25 +17,23 @@ function getTarget (creep) {
   return null;
 }
 
-var roleHarvester = {
+
+var roleHauler = {
   run: function(creep) {
-    if (!creep.memory.task) creep.memory.task = 'harvest';
+    if (!creep.memory.task) creep.memory.task = 'collect';
 
     // State change
-    if (creep.memory.task === 'harvest' && creep.carry.energy === creep.carryCapacity) {
-      creep.memory.task = 'dump';
+    if (creep.memory.task === 'collect' && creep.carry.energy === creep.carryCapacity) {
+      creep.memory.task = 'use';
       creep.memory.target = null;
-    } else if (creep.memory.task === 'dump' && creep.carry.energy === 0) {
-      creep.memory.task = 'harvest';
+    } else if (creep.memory.task === 'use' && creep.carry.energy === 0) {
+      creep.memory.task = 'collect';
       creep.memory.source = null;
     }
 
-    if (creep.memory.task === 'harvest') {
-      if (!creep.memory.source) creep.memory.source = getSource(creep);
-      var source = Game.getObjectById(creep.memory.source);
-      if(creep.harvest(source) == ERR_NOT_IN_RANGE) creep.moveTo(source);
-      return true;
-    } else { // dump
+    if (creep.memory.task === 'collect') {
+      utils.getEnergy(creep, false);
+    } else { // use
       if (!creep.memory.target) creep.memory.target = getTarget(creep);
       if (!creep.memory.target) return false;
       let target = Game.getObjectById(creep.memory.target);
@@ -53,7 +46,7 @@ var roleHarvester = {
           break;
         case ERR_FULL:
         case ERR_NOT_ENOUGH_RESOURCES:
-          creep.memory.target = null;
+          creep.memory.target = getTarget(creep);
           break;
       }
       return true;
@@ -61,5 +54,5 @@ var roleHarvester = {
   }
 };
 
-module.exports = roleHarvester;
+module.exports = roleHauler;
 // vim:syntax=javascript:expandtab:ts=2:sw=2

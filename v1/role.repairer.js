@@ -1,11 +1,4 @@
-function getSource (creep) {
-  var spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
-  if (spawn.energy > 200) {
-    return spawn.id;
-  } else {
-    return creep.pos.findClosestByPath(FIND_SOURCES).id;
-  }
-}
+let utils = require('utils');
 
 function getTarget (creep) {
   var targets = creep.room.find(FIND_STRUCTURES, {
@@ -24,46 +17,35 @@ function getTarget (creep) {
   if (willDie.length > 0) targets = willDie;
 
   targets.sort((a,b) => {
-    return ((a.hits/a.hitsMax)*(a.structureType == STRUCTURE_RAMPART ? 7 : 1) - 
-    (b.hits/b.hitsMax)*(b.structureType == STRUCTURE_RAMPART ? 7 : 1))});
+    return ((a.hits/a.hitsMax)/(a.structureType == STRUCTURE_RAMPART ? 7 : 1) - 
+    (b.hits/b.hitsMax)/(b.structureType == STRUCTURE_RAMPART ? 7 : 1))});
 
   return targets[0].id;
 }
 
 var roleRepairer = {
   run: function(creep) {
-    if (!creep.memory.task) creep.memory.task = 'harvest';
+    if (!creep.memory.task) creep.memory.task = 'collect';
 
     // State change
-    if (creep.memory.task === 'harvest' && creep.carry.energy === creep.carryCapacity) {
+    if (creep.memory.task === 'collect' && creep.carry.energy === creep.carryCapacity) {
       creep.memory.task = 'repair';
       creep.memory.target = null;
     } else if (creep.memory.task === 'repair' && creep.carry.energy === 0) {
-      creep.memory.task = 'harvest';
+      creep.memory.task = 'collect';
       creep.memory.source = null;
     }
 
 
-    if (creep.memory.task === 'harvest') {
-      if (!creep.memory.source) creep.memory.source = getSource(creep);
-
-      var source = Game.getObjectById(creep.memory.source);
-      if (source.structureType == STRUCTURE_SPAWN) {
-        if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source);
-        }
-      } else {
-        if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source);
-        }
-      }
+    if (creep.memory.task === 'collect') {
+      utils.getEnergy(creep, false);
       return true;
     } else { // repair
       if (!creep.memory.target) creep.memory.target = getTarget(creep);
       if (!creep.memory.target) return false;
       let target = Game.getObjectById(creep.memory.target);
 
-      if (target.hits === target.hitsMax) {
+      if (!target || target.hits === target.hitsMax) {
         creep.memory.target = null;
         return true;
       }
