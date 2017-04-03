@@ -9,4 +9,24 @@
  * When the builder is done building my creep (by PID), return the creep ID to the caller.
  * *****/
 
+Program = require('program/templates/base');
+
+class SpawnCreep extends Program {
+  init() {
+    this.spawn_request = this.args;
+    if (!this.queue) this.queue = this.shm('spawn_queue').q;
+    this.queue.push([this.pid, this.spawn_request.parts, this.spawn_request.mem]);
+  }
+  
+  run(run_input) {
+    let out = this.shm('spawn_queue').out;
+    if (out && this.pid in out) {
+      let creep_name = out[this.pid];
+      this.info(`Creep ${creep_name} was created for us!`);
+      delete out[this.pid];
+      return [this.syscall.EXIT, spawn_name];
+    }
+  }
+}
+
 // vim:syntax=javascript:expandtab:ts=2:sw=2

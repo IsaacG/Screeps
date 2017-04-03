@@ -2,18 +2,23 @@ Program = require('program/templates/base');
 
 
 /* *****
- *
+ * Different types of creeps.
+ * - Statics: give a target (harvest, upgrade). find spot near target, ideally on container. do work. one MOVE, one CARRY. All WORK.
+ * - Haulers: CARRY and MOVE. Get resources from mines to elsewhere.
+ * - Workers: get energy. figure out what work needs doing (repair, collect energy, build, upgrade). Do it.
+ * 
+ * 
+ * 
  * *****/
 class ManageRoomCreeps extends Program {
   init() {
     // Track creeps dedicated to running this room.
-    this.m.room_creeps = {}
+    this.m.room_creeps = {};
+    this.m.spawning = {};
   }
 
-  loop_init() {
+  setup() {
     this.room = this.args;
-    if (!this.queue) this.queue = this.shm('spawn_queue').q;
-    if (!this.out) this.out = this.shm('spawn_queue').out;
   }
 
   // To spawn creep, we exec a spawn_creep {args}, transition to WAITING and WAIT on it
@@ -24,27 +29,67 @@ class ManageRoomCreeps extends Program {
   // Loop on creation. When nothing left to create, we can do into a WAIT-loop to regen.
 
   addCreep(role) {
-    let rc = this.exec('creep_' + role);
+    let rc = this.exec('spawn_creep', parts);
     let pid = rc[0];
-    this.m.room_creeps[pid] = role;
-  }
-
-  creepDied(pid) {
+    this.m.spawning[pid] = role;
   }
 
   run(run_input) {
-    // Run even N ticks?
-    // Spin up a bunch of creeps.
-    // Poll for death and recreate on death.
     let room = Game.rooms[this.room];
-    // Filter creeps based on room and/or based on room_creeps.
-    if ((Game.time % 3) == 0) {
-      this.queue.push([this.pid, [MOVE, CARRY, WORK], null]);
+    if (tick) {
+      cleanUpDeadCreeps();
+      getJobs();
+      addCreeps();
+      runStaticCreeps();
+      runHaulers();
+      runWorkers();
+    } else if (WAIT) {
+      reap creep
+      add to worker queue
     }
-    if (this.out && this.pid in this.out) {
-      this.info(`Spawn ${this.out[this.pid]} was created for us!`);
-      delete this.out[this.pid];
-    }
+  }
+
+  /* *****
+   * If a creep no longer exists, delete it from the list of workers.
+   * Maybe create a new one? Or not.
+   * *****/
+  cleanUpDeadCreeps () {
+  }
+
+  /* *****
+   * Compute what work needs to be done. Used to assign and build creeps. Priorities.
+   * *****/
+  getJobs () {
+  }
+
+  /* *****
+   * Add creeps as needed.
+   * Harvester if no static harvester plus hauler.
+   * One harvester per source plus hauler.
+   * 2-3 upgraders until static.
+   * Builder if count(construction site) / N > builders
+   * Repairer if anything under 75%
+   * Works with getJobs()
+   * *****/
+  addCreeps () {
+  }
+
+  /* *****
+   * For static workers, move and work.
+   * *****/
+  runStaticCreeps () {
+  }
+
+  /* *****
+   * Pickup, drop off.
+   * *****/
+  runHaulers () {
+  }
+
+  /* *****
+   * Get energy. Assign to a task with it. Build, repair, fill, upgrade.
+   * *****/
+  runWorkers () {
   }
 }
 

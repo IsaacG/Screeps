@@ -16,7 +16,7 @@ class ManageSpawnQueue extends Program {
     this.m.state = STATE_POLL;
     this.m.req_pid = 0;
   }
-  loop_init() {
+  setup() {
     this.spawn_name = this.args;
     if (!this.queue) this.queue = this.shm('spawn_queue').q;
     if (!this.out) this.out = this.shm('spawn_queue').out;
