@@ -1,3 +1,5 @@
+let utils = require('utils');
+
 function getSource (creep) {
   if (creep.memory.static_source) return creep.memory.static_source;
   var sources = creep.room.find(FIND_SOURCES);
@@ -36,9 +38,7 @@ var roleHarvester = {
     }
 
     if (creep.memory.task === 'harvest') {
-      if (!creep.memory.source) creep.memory.source = getSource(creep);
-      var source = Game.getObjectById(creep.memory.source);
-      if(creep.harvest(source) == ERR_NOT_IN_RANGE) creep.moveTo(source);
+      utils.getEnergy(creep, false);
       return true;
     } else { // dump
       if (!creep.memory.target) creep.memory.target = getTarget(creep);
