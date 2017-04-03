@@ -5,6 +5,7 @@ function getTarget (creep) {
     filter: (structure) => {
       return (structure.structureType == STRUCTURE_RAMPART ||
         structure.structureType == STRUCTURE_ROAD ||
+        structure.structureType == STRUCTURE_CONTAINER ||
         structure.structureType == STRUCTURE_WALL) && structure.hits < structure.hitsMax;
     }
   });
@@ -12,8 +13,11 @@ function getTarget (creep) {
   if(targets.length === 0) return null;
 
   var willDie = targets.filter((s) => {
-    return (s.structureType == STRUCTURE_RAMPART && s.hits < 2*RAMPART_DECAY_AMOUNT) ||
-    (s.structureType == STRUCTURE_ROAD && s.hits < 2*ROAD_DECAY_AMOUNT); });
+    return (
+      (s.structureType == STRUCTURE_RAMPART && s.hits < 15*RAMPART_DECAY_AMOUNT)
+      || (s.structureType == STRUCTURE_ROAD && s.hits < 10*ROAD_DECAY_AMOUNT)
+      || (s.structureType == STRUCTURE_CONTAINER && s.hits < 10*CONTAINER_DECAY)
+    ); });
   if (willDie.length > 0) targets = willDie;
 
   targets.sort((a,b) => {
