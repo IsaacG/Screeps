@@ -5,6 +5,7 @@ Program = require('program/templates/base');
  *
  * *****/
 class ProgramName extends Program {
+  // Ran once and only once. Use to configure this.m
   init() {
   }
 

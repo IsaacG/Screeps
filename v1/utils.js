@@ -18,7 +18,7 @@ function getSource (creep, tapSpawn) {
   var r
   if (tapSpawn) {
     r = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
-    if (r.energy > 200) return r.id;
+    if (r && r.energy > 200) return r.id;
   }
 
   r = creep.pos.findClosestByPath(FIND_DROPPED_ENERGY, {

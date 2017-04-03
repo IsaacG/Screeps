@@ -21,7 +21,7 @@ class Program extends LogBase {
       this.init();
       this.m.called_init = true;
     }
-    this.loop_init();
+    this.setup();
   }
 
   log (level, msg) {
@@ -52,7 +52,7 @@ class Program extends LogBase {
     return this.kernel.shm(name);
   }
 
-  loop_init() {};
+  setup() {};
   init() {};
   run(syscall_result) {};
 }
