@@ -7,7 +7,7 @@ function getTarget (creep) {
       return (((structure.structureType == STRUCTURE_EXTENSION ||
         structure.structureType == STRUCTURE_SPAWN ||
         structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity) ||
-        (structure.structureType == STRUCTURE_STORAGE && structure.store < structure.storeCapacity));
+        (structure.structureType == STRUCTURE_STORAGE && _.sum(structure.store) < structure.storeCapacity));
     }
   });
   if(targets.length > 0) {
