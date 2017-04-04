@@ -32,7 +32,7 @@ var spawnMakeCreep = {
       console.log("Failed to make create: " + name)
     } else {
       spawn.memory.makeCreep.shift();
-      console.log("Made creep '" + name + "', role " + role + ". Parts: " + parts + " (" + parts.length + ")");
+      console.log(`${spawn.name} made creep ${name} (${role}). Parts: ${parts} (${parts.length})`);
     }
   }
 };
